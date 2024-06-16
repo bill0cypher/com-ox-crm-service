@@ -6,7 +6,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.ox.crm.core.dto.param.TaskUpdateParam;
+import com.ox.crm.core.exception.ForbiddenException;
 import com.ox.crm.core.exception.NotFoundException;
+import com.ox.crm.core.exception.UnauthorizedException;
 import com.ox.crm.core.mapper.TaskMapper;
 import com.ox.crm.core.model.Task;
 import com.ox.crm.core.model.enums.Status;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
 public class TaskService {
   private final TaskRepository taskRepository;
   private final ContactService contactService;
+  private final JwtService jwtService;
   private final TaskMapper taskMapper;
 
   public Task create(Task task) {
@@ -42,9 +45,25 @@ public class TaskService {
   @CacheEvict(value = "tasksCache", key = "#taskId", cacheManager = "cacheManager")
   public Task updateTask(UUID taskId, TaskUpdateParam taskParam) {
     var task = findById(taskId);
-    var taskUpdated = taskMapper.updateTask(taskParam, task);
+    try {
+      var principalEmail = jwtService.getPrincipal()
+          .getUsername();
+      var contactId = contactService.findByEmail(principalEmail)
+          .getId();
 
-    return taskRepository.save(taskUpdated);
+      if (contactId != task.getContact().getId()) {
+        throw new UnauthorizedException();
+      }
+
+      var taskUpdated = taskMapper.updateTask(taskParam, task);
+      return taskRepository.save(taskUpdated);
+    } catch (UnauthorizedException e) {
+      log.error("Unauthorized user can't update tasks.", e);
+      throw new UnauthorizedException();
+    } catch (ForbiddenException e) {
+      log.error("User lacks of permissions to update this task", e);
+      throw new ForbiddenException();
+    }
   }
 
   @Cacheable(value = "tasksCache", key = "#taskId", cacheManager = "cacheManager")

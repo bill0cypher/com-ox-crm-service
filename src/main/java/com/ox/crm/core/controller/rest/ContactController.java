@@ -1,12 +1,12 @@
-package com.ox.crm.core.controller;
+package com.ox.crm.core.controller.rest;
 
 import static java.util.UUID.fromString;
 
-import com.ox.crm.core.dto.ClientDto;
-import com.ox.crm.core.dto.param.ClientCreateParam;
-import com.ox.crm.core.dto.param.ClientUpdateParam;
-import com.ox.crm.core.mapper.ClientMapper;
-import com.ox.crm.core.service.ClientService;
+import com.ox.crm.core.dto.ContactDto;
+import com.ox.crm.core.dto.param.ContactCreateParam;
+import com.ox.crm.core.dto.param.ContactUpdateParam;
+import com.ox.crm.core.mapper.ContactMapper;
+import com.ox.crm.core.service.ContactService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -30,13 +30,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
-@RequestMapping("/v1/clients")
+@RequestMapping("/v1/contacts")
 @RequiredArgsConstructor
-@Tag(name = "Clients", description = "Clients resource")
-public class ClientController {
-
-  private final ClientService clientService;
-  private final ClientMapper clientMapper;
+@Tag(name = "Contacts", description = "Contacts resource")
+public class ContactController {
+  
+  private final ContactService contactService;
+  private final ContactMapper contactMapper;
 
   @PostMapping
   @ApiResponses(value = {
@@ -46,14 +46,13 @@ public class ClientController {
       @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
       @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
   })
-  public ClientDto createClient(@Valid @RequestBody ClientCreateParam clientParam) {
-    var clientMapped = clientMapper.mapToClient(clientParam);
-    var client = clientService.create(clientMapped);
+  public ContactDto createContact(@Valid @RequestBody ContactCreateParam contactParam) {
+    var contact = contactService.create(contactParam);
 
-    return clientMapper.mapToClientDto(client);
+    return contactMapper.mapToContactDto(contact);
   }
 
-  @PatchMapping("{clientId}")
+  @PatchMapping("{contactId}")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "OK"),
       @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
@@ -62,15 +61,15 @@ public class ClientController {
       @ApiResponse(responseCode = "404", description = "Not Found", content = @Content),
       @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
   })
-  public ClientDto createClient(
-      @PathVariable @UUID String clientId,
-      @RequestBody @Valid ClientUpdateParam clientParam) {
-    var client = clientService.update(fromString(clientId), clientParam);
+  public ContactDto updateContact(
+      @PathVariable @UUID String contactId,
+      @RequestBody @Valid ContactUpdateParam contactParam) {
+    var contact = contactService.update(fromString(contactId), contactParam);
 
-    return clientMapper.mapToClientDto(client);
+    return contactMapper.mapToContactDto(contact);
   }
 
-  @DeleteMapping("{clientId}")
+  @DeleteMapping("{contactId}")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "202", description = "Accepted"),
       @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
@@ -80,11 +79,11 @@ public class ClientController {
       @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
   })
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deleteClient(@PathVariable @UUID String clientId) {
-    clientService.delete(fromString(clientId));
+  public void deleteContact(@PathVariable @UUID String contactId) {
+    contactService.delete(fromString(contactId));
   }
 
-  @GetMapping("{clientId}")
+  @GetMapping("{contactId}")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "OK"),
       @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
@@ -93,10 +92,10 @@ public class ClientController {
       @ApiResponse(responseCode = "404", description = "Not Found", content = @Content),
       @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
   })
-  public ClientDto findClientById(@PathVariable @UUID String clientId) {
-    var client = clientService.findById(fromString(clientId));
+  public ContactDto findContactById(@PathVariable @UUID String contactId) {
+    var contact = contactService.findById(fromString(contactId));
 
-    return clientMapper.mapToClientDto(client);
+    return contactMapper.mapToContactDto(contact);
   }
 
   @GetMapping
@@ -107,7 +106,7 @@ public class ClientController {
       @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
       @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
   })
-  public Page<ClientDto> findAllClients(Pageable pageable) {
-    return clientService.findAll(pageable);
+  public Page<ContactDto> findAllContacts(Pageable pageable) {
+    return contactService.findAll(pageable);
   }
 }
