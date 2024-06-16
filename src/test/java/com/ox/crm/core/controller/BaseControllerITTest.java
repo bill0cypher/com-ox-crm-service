@@ -1,7 +1,6 @@
 package com.ox.crm.core.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import java.util.HashSet;
 import java.util.List;
@@ -91,8 +90,7 @@ public class BaseControllerITTest {
     var resultActions = mockMvc.perform(post("/auth/login")
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(loginParam)));
-    byte[] loginResponse = resultActions.andDo(print())
-        .andReturn()
+    byte[] loginResponse = resultActions.andReturn()
         .getResponse()
         .getContentAsByteArray();
     LoginResponse response = objectMapper.readValue(loginResponse, LoginResponse.class);

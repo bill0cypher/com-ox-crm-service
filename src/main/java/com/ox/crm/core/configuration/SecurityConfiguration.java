@@ -61,7 +61,7 @@ public class SecurityConfiguration {
     http.csrf()
         .disable()
         .authorizeHttpRequests(registry -> registry
-            .requestMatchers("/auth/**")
+            .requestMatchers("/auth/**", "/ws/**")
             .permitAll()
             .requestMatchers(HttpMethod.DELETE, "/v1/**")
             .access(adminAccess)

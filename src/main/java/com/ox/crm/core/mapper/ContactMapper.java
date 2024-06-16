@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-@Mapper()
+@Mapper
 public interface ContactMapper {
   ContactDto mapToContactDto(Contact contact);
 
