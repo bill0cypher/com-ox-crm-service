@@ -26,11 +26,4 @@ public class ChatController {
 
     simpMessagingTemplate.convertAndSend("/topic/messages/" + uuid, new OutputChatMessage(payload.getFrom(), payload.getText(), time));
   }
-
-  @MessageMapping("/assignments/{uuid}")
-  public void pushNotification(@DestinationVariable("uuid") String uuid, @Payload ChatMessage payload) {
-    final String time = new SimpleDateFormat("HH:mm").format(new Date());
-
-    simpMessagingTemplate.convertAndSend("/topic/notifications/" + uuid, new OutputChatMessage(payload.getFrom(), payload.getText(), time));
-  }
 }
