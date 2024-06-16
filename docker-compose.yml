@@ -1,15 +1,15 @@
 version: "3.8"
 services:
-  #ve-core:
-  #  ports:
-  #    - "0.0.0.0:8080:8080"
-  #  build:
-  #    dockerfile: Dockerfile
-  #  depends_on:
-  #    - postgres
-  #    - redis
-  #  env_file:
-  #    - ve-core.env
+  core-crm:
+    ports:
+      - "0.0.0.0:8080:8080"
+    build:
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - core-crm.env
 
   postgres:
     image: postgres:latest

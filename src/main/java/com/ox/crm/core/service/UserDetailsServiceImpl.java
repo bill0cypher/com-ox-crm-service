@@ -75,7 +75,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
       authorities.add(new SimpleGrantedAuthority(privilege));
     }
 
-    log.info("Requested privileged authentication");
+    log.debug("Requested privileged authentication");
     return authorities;
   }
 }
