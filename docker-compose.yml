@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+  #ve-core:
+  #  ports:
+  #    - "0.0.0.0:8080:8080"
+  #  build:
+  #    dockerfile: Dockerfile
+  #  depends_on:
+  #    - postgres
+  #    - redis
+  #  env_file:
+  #    - ve-core.env
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 2
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: core-crm
+
+  redis:
+    image: redis:7.0.7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_CLIENT_PORT: 6379

@@ -1,0 +1,27 @@
+server:
+  servlet:
+    context-path: /core/crm
+  port: 8080
+
+spring:
+  application:
+    name: crm-service
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: create
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: ${PGU:postgres}
+    password: ${PGP:postgres}
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:core-crm}
+
+application:
+  security:
+    secret-key: ${SECRET_KEY:}
+    jwt-expiration-in-ms: 600000
+  cors:
+    allowed-headers: Authorization,Content-Type
+    allowed-methods: GET,POST,PATCH,DELETE
+    allowed-origins: ${CLIENT_HOST:http://localhost:4200}

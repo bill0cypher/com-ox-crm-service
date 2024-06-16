@@ -1,0 +1,8 @@
+wiremock:
+  server:
+    host: localhost
+    port: 8080
+
+application:
+  security:
+    secret-key: c3VrYWJseWF0Y2h1ZG92aXNjaGVlYmFub2VvdHN0YW5vdG1lbnlh

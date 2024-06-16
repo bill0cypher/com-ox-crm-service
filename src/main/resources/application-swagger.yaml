@@ -1,0 +1,14 @@
+swagger:
+  api:
+    title: Customer Relationship Management API
+    description: The service brings clients, contacts, and tasks management functionality for external partners
+    version: 1.0
+  server:
+    description: Customer Relationship Management
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    oauth:
+      app-name: core-crm
