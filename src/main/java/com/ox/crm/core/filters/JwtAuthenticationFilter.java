@@ -1,4 +1,4 @@
-package com.ox.crm.core.security;
+package com.ox.crm.core.filters;
 
 import static com.ox.crm.core.constants.AppConstants.BEARER_PREFIX;
 import static org.apache.commons.lang3.StringUtils.EMPTY;

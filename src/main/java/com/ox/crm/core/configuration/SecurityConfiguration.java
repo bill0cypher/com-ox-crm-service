@@ -3,9 +3,9 @@ package com.ox.crm.core.configuration;
 import static com.ox.crm.core.model.enums.Role.ROLE_ADMIN;
 import static com.ox.crm.core.model.enums.Role.ROLE_USER;
 
+import com.ox.crm.core.filters.JwtAuthenticationFilter;
 import com.ox.crm.core.model.enums.Role;
 import com.ox.crm.core.properties.ApplicationProperties;
-import com.ox.crm.core.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
