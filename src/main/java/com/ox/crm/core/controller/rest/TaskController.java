@@ -1,12 +1,12 @@
-package com.ox.crm.core.controller;
+package com.ox.crm.core.controller.rest;
 
 import static java.util.UUID.fromString;
 
-import com.ox.crm.core.dto.ContactDto;
-import com.ox.crm.core.dto.param.ContactCreateParam;
-import com.ox.crm.core.dto.param.ContactUpdateParam;
-import com.ox.crm.core.mapper.ContactMapper;
-import com.ox.crm.core.service.ContactService;
+import com.ox.crm.core.dto.param.TaskCreateParam;
+import com.ox.crm.core.dto.param.TaskUpdateParam;
+import com.ox.crm.core.mapper.TaskMapper;
+import com.ox.crm.core.model.Task;
+import com.ox.crm.core.service.TaskService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -18,25 +18,25 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
-@RequestMapping("/v1/contacts")
+@RequestMapping("/v1/tasks")
 @RequiredArgsConstructor
-@Tag(name = "Contacts", description = "Contacts resource")
-public class ContactController {
-  
-  private final ContactService contactService;
-  private final ContactMapper contactMapper;
+@Tag(name = "Tasks", description = "Tasks resource")
+public class TaskController {
+
+  private final TaskService taskService;
+  private final TaskMapper taskMapper;
 
   @PostMapping
   @ApiResponses(value = {
@@ -44,69 +44,64 @@ public class ContactController {
       @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
       @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
       @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+      @ApiResponse(responseCode = "404", description = "Not Found", content = @Content),
       @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
   })
-  public ContactDto createContact(@Valid @RequestBody ContactCreateParam contactParam) {
-    var contact = contactService.create(contactParam);
+  public Task createTask(@Valid @RequestBody TaskCreateParam taskParam) {
+    var task = taskMapper.mapToTask(taskParam);
 
-    return contactMapper.mapToContactDto(contact);
+    return taskService.create(task);
   }
 
-  @PatchMapping("{contactId}")
+  @PatchMapping("{taskId}")
   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK"),
+      @ApiResponse(responseCode = "201", description = "Created"),
       @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
       @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
       @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
       @ApiResponse(responseCode = "404", description = "Not Found", content = @Content),
       @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
   })
-  public ContactDto updateContact(
-      @PathVariable @UUID String contactId,
-      @RequestBody @Valid ContactUpdateParam contactParam) {
-    var contact = contactService.update(fromString(contactId), contactParam);
-
-    return contactMapper.mapToContactDto(contact);
+  public Task updateTask(@PathVariable @UUID String taskId, @Valid @RequestBody TaskUpdateParam taskParam) {
+    return taskService.updateTask(fromString(taskId), taskParam);
   }
 
-  @DeleteMapping("{contactId}")
+  @PatchMapping("assign/{taskId}")
   @ApiResponses(value = {
-      @ApiResponse(responseCode = "202", description = "Accepted"),
+      @ApiResponse(responseCode = "201", description = "Created"),
       @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
       @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
       @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
       @ApiResponse(responseCode = "404", description = "Not Found", content = @Content),
       @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
   })
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deleteContact(@PathVariable @UUID String contactId) {
-    contactService.delete(fromString(contactId));
+  @ResponseStatus(HttpStatus.ACCEPTED)
+  public void assignTask(@PathVariable @UUID String taskId, @RequestParam("contactId") @UUID String contactId) {
+    taskService.assignTask(fromString(taskId), fromString(contactId));
   }
 
-  @GetMapping("{contactId}")
+  @GetMapping("{taskId}")
   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK"),
+      @ApiResponse(responseCode = "201", description = "Created"),
       @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
       @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
       @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
       @ApiResponse(responseCode = "404", description = "Not Found", content = @Content),
       @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
   })
-  public ContactDto findContactById(@PathVariable @UUID String contactId) {
-    var contact = contactService.findById(fromString(contactId));
-
-    return contactMapper.mapToContactDto(contact);
+  public Task findTaskById(@PathVariable @UUID String taskId) {
+    return taskService.findById(fromString(taskId));
   }
 
   @GetMapping
   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK"),
+      @ApiResponse(responseCode = "201", description = "Created"),
       @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
       @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
       @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
       @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
   })
-  public Page<ContactDto> findAllContacts(Pageable pageable) {
-    return contactService.findAll(pageable);
+  public Page<Task> findAllTasks(Pageable pageable) {
+    return taskService.findAll(pageable);
   }
 }

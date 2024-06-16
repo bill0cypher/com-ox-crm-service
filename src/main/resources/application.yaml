@@ -11,11 +11,15 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       ddl-auto: create
+    defer-datasource-initialization: true
   datasource:
     driver-class-name: org.postgresql.Driver
     username: ${PGU:postgres}
     password: ${PGP:postgres}
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:core-crm}
+  sql:
+    init:
+      mode: always
 
 application:
   security:

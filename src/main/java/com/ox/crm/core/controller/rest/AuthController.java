@@ -1,4 +1,4 @@
-package com.ox.crm.core.controller;
+package com.ox.crm.core.controller.rest;
 
 import com.ox.crm.core.dto.ContactDto;
 import com.ox.crm.core.dto.LoginDto;
